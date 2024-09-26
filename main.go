@@ -1,18 +1,25 @@
 package main
 
 import (
-	"fmt"
 	"context"
+	"fmt"
+	"os"
+	"os/signal"
+
 	"github.com/orders-api/application"
 )
 
 
 func main() {
 	app := application.New()
-	err := app.Start(context.TODO())
+
+	ctx, cancel := signal.NotifyContext(context.Background(), os.Interrupt)
+	err := app.Start(ctx)
 	if err != nil {
-		fmt.Println("Failed to listen and serve")
+		fmt.Printf("Failed to listen and serve %v", err)
 	}
+
+	defer cancel()
 }
 
 // func main() {
